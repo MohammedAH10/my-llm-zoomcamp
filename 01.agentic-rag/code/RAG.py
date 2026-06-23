@@ -1,7 +1,9 @@
 import os 
 from dotenv import load_dotenv
 
+# pyrefly: ignore [missing-import]
 from ingest import load_faq_data, build_index
+# pyrefly: ignore [missing-import]
 from rag_helper import RAGBase
 from openai import OpenAI
 
