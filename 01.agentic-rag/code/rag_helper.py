@@ -1,3 +1,4 @@
+from pydantic.deprecated import tools
 INSTRUCTIONS = """
 Your task is to answer questions from the course participants
 based on the provided context.
@@ -59,6 +60,25 @@ class RAGBase:
     
     # The LLM methods that sends prompts to the LLM
     def llm(self, prompt):
+        
+        # making the llm agentic and be able to call functions
+        search_tool = {
+            "type": "function",
+            "name": "search",
+            "description": "search the FAQ database for entries matching teh query",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "decsription": "search query text to look up in the course FAQ"
+                    }
+                },
+                "required": ["query"],
+                "additionalProperties": False
+            }
+        }
+
         input_message = [
             {"role": "developer", "content": self.instructions},
             {"role": "user", "content": prompt}
@@ -66,10 +86,12 @@ class RAGBase:
 
         response = self.llm_client.responses.create(
             model=self.model,
-            input=input_message
+            input=input_message,
+            tools=[search_tool]
         )
 
-        return response.output_text
+        return response.output
+        # return response.output_text
 
 
     # The RAG method that wires all the  methods together
@@ -77,5 +99,7 @@ class RAGBase:
         search_results = self.search(query)
         prompt = self.build_prompt(query, search_results)
         answer = self.llm(prompt)
+
+        
 
         return answer
