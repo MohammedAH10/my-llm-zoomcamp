@@ -24,7 +24,7 @@ class RAGBase:
         instructions=INSTRUCTIONS,
         prompt_template=PROMPT_TEMPLATE,
         course='llm-zoomcamp',
-        model='gpt-5.4-mini'
+        model="meta-llama/llama-4-scout-17b-16e-instruct"
     ):
         self.index = index
         self.llm_client = llm_client
